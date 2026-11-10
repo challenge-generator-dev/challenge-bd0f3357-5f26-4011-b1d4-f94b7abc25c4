@@ -1,0 +1,191 @@
+# ===================================================================
+# Configuración para terraform-docs: genera documentación automática
+# de los módulos y variables de Terraform en formato Markdown.
+# ===================================================================
+
+version: "1.0"
+
+header:
+  fields:
+    - name: version
+      type: string
+      required: true
+      description: Versión de Terraform
+    - name: provider
+      type: string
+      required: true
+      description: Proveedor de cloud
+
+settings:
+  anchor: true
+  color: true
+  default-language: common
+  escape: true
+  hide-empty: false
+  html-before-headers: false
+  indent-level: 2
+  line-length: 80
+  lockfile: true
+  module: false
+  read-compatibility: true
+  recursive: false
+  recursive-path: modules
+  required: true
+  sensitive: true
+  show-all: true
+  show-header: true
+  show-inertia: false
+  show-modules: true
+  show-sensitivity: true
+  sidebar: {
+    folded: false
+  }
+  sort: {
+    enabled: true
+    fields:
+      - name
+      - required
+      - type
+    order: asc
+  }
+  template: |-
+    <!-- This file is managed by terraform-docs - DO NOT EDIT -->
+    {{ .Content }}
+  toc: {
+    enabled: true
+    title: Tabla de contenidos
+    indent: 2
+  }
+
+formatter: "markdown table"
+
+content: |-
+  {{ .Header }}
+
+  {{ .ModuleHeader }}
+  {{ if .ModuleCalls }}
+
+  ## Módulos
+
+  | Nombre | Descripción |
+  |--------|-------------|
+  {{ range .ModuleCalls }}
+  | [`{{ .Name }}`]({{ .Path }}) | {{ .Description }} |
+  {{ end }}
+  {{ end }}
+  {{ if .ModuleProviders }}
+
+  ## Proveedores requeridos
+
+  | Proveedor | Versión |
+  |-----------|---------|
+  {{ range .ModuleProviders }}
+  | [{{ .Name }}]({{ .Website }}) | {{ .Version }} |
+  {{ end }}
+  {{ end }}
+  {{ if .ModuleRequirements }}
+
+  ## Requisitos
+
+  | Requisito | Versión |
+  |-----------|---------|
+  {{ range .ModuleRequirements }}
+  | {{ .Name }} | {{ .Version }} |
+  {{ end }}
+  {{ end }}
+  {{ if .ModuleResources }}
+
+  ## Recursos
+
+  | Tipo | Nombre |
+  |------|--------|
+  {{ range .ModuleResources }}
+  | [{{ .Type }}]({{ .URL }}) | [{{ .Name }}](#{{ .Name | anchor }}) |
+  {{ end }}
+  {{ end }}
+  {{ if .ModuleOutputs }}
+
+  ## Salidas
+
+  | Nombre | Descripción |
+  |--------|-------------|
+  {{ range .ModuleOutputs }}
+  | [{{ .Name }}](#{{ .Name | anchor }}) | {{ .Description }} |
+  {{ end }}
+  {{ end }}
+  {{ if .ModuleInputs }}
+
+  ## Entradas
+
+  | Nombre | Descripción | Tipo | Valor por defecto | Requerido |
+  |--------|-------------|------|-------------------|-----------|
+  {{ range .ModuleInputs }}
+  | [{{ .Name }}](#{{ .Name | anchor }}) | {{ .Description }} | {{ .Type }} | {{ if .DefaultValue }}{{ .DefaultValue }}{{ else }}-{{ end }} | {{ if .Required }}sí{{ else }}no{{ end }} |
+  {{ end }}
+  {{ end }}
+  {{ .ModuleFooter }}
+
+  {{ .ProviderHeader }}
+  {{ if .ProviderRequirements }}
+
+  ## Requisitos del proveedor
+
+  | Proveedor | Versión |
+  |-----------|---------|
+  {{ range .ProviderRequirements }}
+  | [{{ .Name }}]({{ .Website }}) | {{ .Version }} |
+  {{ end }}
+  {{ end }}
+  {{ .ProviderFooter }}
+
+  {{ .RequirementsHeader }}
+  {{ if .Requirements }}
+
+  ## Requisitos
+
+  | Requisito | Versión |
+  |-----------|---------|
+  {{ range .Requirements }}
+  | {{ .Name }} | {{ .Version }} |
+  {{ end }}
+  {{ end }}
+  {{ .RequirementsFooter }}
+
+  {{ .ResourcesHeader }}
+  {{ if .Resources }}
+
+  ## Recursos
+
+  | Tipo | Nombre |
+  |------|--------|
+  {{ range .Resources }}
+  | [{{ .Type }}]({{ .URL }}) | [{{ .Name }}](#{{ .Name | anchor }}) |
+  {{ end }}
+  {{ end }}
+  {{ .ResourcesFooter }}
+
+  {{ .OutputsHeader }}
+  {{ if .Outputs }}
+
+  ## Salidas
+
+  | Nombre | Descripción |
+  |--------|-------------|
+  {{ range .Outputs }}
+  | [{{ .Name }}](#{{ .Name | anchor }}) | {{ .Description }} |
+  {{ end }}
+  {{ end }}
+  {{ .OutputsFooter }}
+
+  {{ .InputsHeader }}
+  {{ if .Inputs }}
+
+  ## Entradas
+
+  | Nombre | Descripción | Tipo | Valor por defecto | Requerido |
+  |--------|-------------|------|-------------------|-----------|
+  {{ range .Inputs }}
+  | [{{ .Name }}](#{{ .Name | anchor }}) | {{ .Description }} | {{ .Type }} | {{ if .DefaultValue }}{{ .DefaultValue }}{{ else }}-{{ end }} | {{ if .Required }}sí{{ else }}no{{ end }} |
+  {{ end }}
+  {{ end }}
+  {{ .InputsFooter }}
